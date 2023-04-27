@@ -43,15 +43,20 @@
             </span>
           </td>
           <td class="text-center">
-            <div @click="deleteTask(index)">
-              <span class="fa fa-trash pinter"></span>
+            <div @click="editedTask(index)">
+              <span class="fa fa-pen pointer"></span>
             </div>
           </td>
           <td class="text-center">
-            <div @click="editTask(index)">
-              <p class="fa fa-pen pointer"></p>
+            <div @click="deleteTask(index)">
+              <span class="fa fa-trash pointer"></span>
             </div>
           </td>
+          <!-- <td class="text-center">
+            <div @click="deleteTask(index)">
+              <span class="fa fa-trash pinter"></span>
+            </div>
+          </td> -->
         </tr>
       </tbody>
     </table>
