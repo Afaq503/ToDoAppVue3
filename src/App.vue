@@ -7,4 +7,10 @@
   <main></main>
 </template>
 
-<style scoped></style>
+<style>
+#app {
+  font-family: Arial, Helvetica, sans-serif;
+  text-align: center;
+  margin-top: 60px;
+}
+</style>

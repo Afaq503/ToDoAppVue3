@@ -1,9 +1,9 @@
 <template>
   <div class="container" style="max-width: 600px">
     <!-- heading Start -->
-    <h2 class="text-center mt-5">My Vue TODO App</h2>
+    <h2 class="text-center mt-5">My TODO App</h2>
     <!-- input -->
-    <div class="d-flex mt-5">
+    <div class="d-flex mt-5" @keyup.enter="submitTask">
       <input
         type="text"
         v-model="task"
@@ -43,7 +43,7 @@
             </span>
           </td>
           <td class="text-center">
-            <div @click="editedTask(index)">
+            <div @click="editTask(index)">
               <span class="fa fa-pen pointer"></span>
             </div>
           </td>
@@ -52,11 +52,6 @@
               <span class="fa fa-trash pointer"></span>
             </div>
           </td>
-          <!-- <td class="text-center">
-            <div @click="deleteTask(index)">
-              <span class="fa fa-trash pinter"></span>
-            </div>
-          </td> -->
         </tr>
       </tbody>
     </table>
@@ -69,25 +64,32 @@ export default {
   props: {
     msg: String,
   },
+  mounted() {
+    let user = localStorage.getItem("user-info");
+    if (!user) {
+      this.$router.push({ name: "SignupView" });
+    }
+  },
   data() {
     return {
       task: "",
       editedTask: null,
       statuses: ["to-do", "in-progress", "finished"],
       tasks: [
-        {
-          name: "hy sdfhsi",
-          status: "to-do",
-        },
-        {
-          name: "hy jkbdhsjkhdkjh",
-          status: "in-progress",
-        },
-        {
-          name: "hy sdfhsi",
-          status: "finished",
-        },
+        // {
+        //   name: "hy sdfhsi",
+        //   status: "to-do",
+        // },
+        // {
+        //   name: "hy jkbdhsjkhdkjh",
+        //   status: "in-progress",
+        // },
+        // {
+        //   name: "hy sdfhsi",
+        //   status: "finished",
+        // },
       ],
+      api: "http://localhost:5000",
     };
   },
   methods: {
@@ -100,7 +102,7 @@ export default {
       this.tasks[index].status = this.statuses[newIndex];
     },
     //edit Task
-    editedTask(index) {
+    editTask(index) {
       this.task = this.tasks[index].name;
       this.editedTask = index;
     },
