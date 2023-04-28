@@ -1,4 +1,5 @@
 <template>
+  <Header />
   <div class="container" style="max-width: 600px">
     <!-- heading Start -->
     <h2 class="text-center mt-5">My TODO App</h2>
@@ -59,8 +60,13 @@
 </template>
 
 <script>
+import Header from "../components/Header.vue";
+
 export default {
   name: "TodoView",
+  components: {
+    Header,
+  },
   props: {
     msg: String,
   },
