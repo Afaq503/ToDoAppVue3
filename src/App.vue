@@ -11,7 +11,11 @@
 #app {
   font-family: Arial, Helvetica, sans-serif;
   text-align: center;
-  margin-top: 60px;
+  /* margin-top: 60px; */
+}
+body {
+  padding: 0;
+  margin: 0;
 }
 .logo {
   width: 100px;
