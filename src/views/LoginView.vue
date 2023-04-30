@@ -1,39 +1,30 @@
 <template>
-  <img class="logo" src="../assets/logo1.png" />
-  <h1>Login</h1>
-  <h4>{{ error }}</h4>
-  <form @submit.prevent="login">
-    <label>Email:</label>
-    <input type="email" required v-model="email" />
-    <label>Password:</label>
-    <input type="password" required v-model="password" />
-    <div v-if="passwordError" class="error">
-      {{ passwordError }}
-    </div>
+  <div class="container1">
+    <img class="logo" src="../assets/logo1.png" />
+    <h1>Login</h1>
+    <h4>{{ error }}</h4>
+    <form @submit.prevent="login">
+      <label>Email:</label>
+      <input type="email" required v-model="email" />
+      <label>Password:</label>
+      <input type="password" required v-model="password" />
 
-    <div class="terms">
-      <input type="checkbox" v-model="terms" required />
-      <label>Accept terms and conditions</label>
-    </div>
+      <div class="terms">
+        <input type="checkbox" required />
+        <label>Accept terms and conditions</label>
+      </div>
 
-    <div class="submit">
-      <button>Create an account</button>
+      <div class="submit">
+        <button>Login account</button>
+      </div>
+    </form>
+
+    <div>
+      You have not account:
+      <span style="font-weight: 800"
+        ><router-link to="/signup">Sign Up</router-link></span
+      >
     </div>
-  </form>
-  <!-- <div class="login">
-    <input type="email" v-model="email" required placeholder="Enter Email" />
-    <input
-      type="password"
-      v-model="password"
-      required
-      placeholder="Enter Password" />
-    <button @click="login">Login</button>
-  </div> -->
-  <div>
-    You have not account:
-    <span style="font-weight: 800"
-      ><router-link to="/signup">Sign Up</router-link></span
-    >
   </div>
 </template>
 
@@ -72,6 +63,12 @@ export default {
 </script>
 
 <style>
+/* .container1 {
+  border: 1px solid black;
+  margin-top: 10px;
+  margin-left: 500px;
+  margin-right: 500px;
+} */
 h4 {
   color: red;
   font-size: 17px;

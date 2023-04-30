@@ -1,4 +1,5 @@
 <template>
+  <!-- <div class="container1"> -->
   <img class="logo" src="../assets/logo1.png" />
   <h1>Sign Up</h1>
   <form @submit.prevent @keypress.enter="sigUp">
@@ -35,6 +36,7 @@
       ><router-link to="/">Login</router-link></span
     >
   </div>
+  <!-- </div> -->
 </template>
 
 <script>
@@ -151,4 +153,10 @@ button {
   font-size: 0.8em;
   font-weight: bold;
 }
+/* .container1 {
+  border: 1px solid black;
+  margin-top: 10px;
+  margin-left: 500px;
+  margin-right: 500px;
+} */
 </style>

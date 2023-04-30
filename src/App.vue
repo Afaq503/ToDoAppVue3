@@ -19,6 +19,7 @@ body {
 }
 .logo {
   width: 100px;
+  margin-top: 10px;
 }
 .register input,
 .login input {
@@ -39,5 +40,6 @@ body {
   background: skyblue;
   color: "#fff";
   cursor: pointer;
+  /* border-radius: 10px; */
 }
 </style>
