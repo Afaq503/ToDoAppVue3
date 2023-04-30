@@ -70,27 +70,36 @@ export default {
   },
   methods: {
     async sigUp() {
-      // if (password.length > 5) {
-      //   this.passwordError ? "" : "Password must be at least 6 chars long";
-      // }
+      // this.passwordError =
+      //   this.password.length > 5
+      //     ? ""
+      //     : "Password must be at least 6 chars long";
+      // this.phoneError =
+      //   this.phone.length > 10 ? "" : "Phone No must be 11 chars long";
+      if (this.name)
+        if (this.password.length < 5) {
+          this.passwordError = "Password must be at least 6 chars long";
+        } else {
+          ("");
+        }
 
-      this.phoneError =
-        this.phone.length > 10 ? "" : "Phone No must be 11 chars long";
-      // console.warn("signUp", this.name, this.email, this.password);
+      if (this.phone.length < 11) {
+        this.phoneError = "Phone No must be 11 chars long";
+      } else {
+        ("");
+      }
       let result = await axios.post("http://localhost:3000/users", {
         name: this.name,
         email: this.email,
         password: this.password,
         phone: this.phone,
       });
-      if (this.password.length > 5) {
-        this.passwordError ? "" : "Password must be at least 6 chars long";
-      }
-      console.warn(result);
+
       if (result.status == 201) {
         localStorage.setItem("user-info", JSON.stringify(result.data));
         this.$router.push({ name: "TodoView" });
       }
+      // console.warn(result);
     },
 
     handleSubmit() {
