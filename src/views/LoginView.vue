@@ -1,7 +1,26 @@
 <template>
   <img class="logo" src="../assets/logo1.png" />
   <h1>Login</h1>
-  <div class="login">
+  <h4>{{ error }}</h4>
+  <form @submit.prevent="login">
+    <label>Email:</label>
+    <input type="email" required v-model="email" />
+    <label>Password:</label>
+    <input type="password" required v-model="password" />
+    <div v-if="passwordError" class="error">
+      {{ passwordError }}
+    </div>
+
+    <div class="terms">
+      <input type="checkbox" v-model="terms" required />
+      <label>Accept terms and conditions</label>
+    </div>
+
+    <div class="submit">
+      <button>Create an account</button>
+    </div>
+  </form>
+  <!-- <div class="login">
     <input type="email" v-model="email" required placeholder="Enter Email" />
     <input
       type="password"
@@ -9,7 +28,7 @@
       required
       placeholder="Enter Password" />
     <button @click="login">Login</button>
-  </div>
+  </div> -->
   <div>
     You have not account:
     <span style="font-weight: 800"
@@ -26,6 +45,7 @@ export default {
     return {
       email: "",
       password: "",
+      error: "",
     };
   },
   methods: {
@@ -36,6 +56,9 @@ export default {
       if (result.status == 200 && result.data.length > 0) {
         localStorage.setItem("user-info", JSON.stringify(result.data[0]));
         this.$router.push({ name: "TodoView" });
+      } else {
+        this.error = "Email and Password is incorect";
+        // console.log(this.error);
       }
     },
   },
@@ -48,4 +71,10 @@ export default {
 };
 </script>
 
-<style></style>
+<style>
+h4 {
+  color: red;
+  font-size: 17px;
+  font-weight: 400;
+}
+</style>
