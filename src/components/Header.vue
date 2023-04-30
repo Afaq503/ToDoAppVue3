@@ -1,10 +1,10 @@
 <template>
   <div class="nav">
     <img class="logo1" src="../assets/logo1.png" />
-    <a href="#">ToDo</a>
-    <a href="#">Login</a>
-    <a href="#">Sing Up</a>
-    <a @click="logout" href="#">Logout</a>
+    <a href="/todo">ToDo</a>
+    <a href="/">Login</a>
+    <a href="/signup">Sing Up</a>
+    <a @click="logout" href="">Logout</a>
   </div>
 </template>
 

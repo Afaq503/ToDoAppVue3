@@ -1,9 +1,12 @@
 <template>
   <img class="logo" src="../assets/logo1.png" />
   <h1>Sign Up</h1>
-  <form @submit.prevent="sigUp">
+  <form @submit.prevent @keypress.enter="sigUp">
     <label>Name:</label>
     <input type="text" required v-model="name" />
+    <div v-if="nameError" class="error">
+      {{ nameError }}
+    </div>
     <label>Email:</label>
     <input type="email" required v-model="email" />
     <label>Password:</label>
@@ -23,32 +26,15 @@
     </div>
 
     <div class="submit">
-      <button>Create an account</button>
+      <button @submit="sigUp">Create an account</button>
     </div>
   </form>
-  <p>Name: {{ name }}</p>
-  <p>Email: {{ email }}</p>
-  <p>Password: {{ password }}</p>
-  <p>Phone: {{ phone }}</p>
-  <p>Terms: {{ terms }}</p>
-  <!-- <img class="logo" src="../assets/logo1.png" />
-  <h1>Sign Up</h1>
-  <div class="register">
-    <input type="text" v-model="name" required placeholder="Enter Name" />
-    <input type="email" v-model="email" required placeholder="Enter Email" />
-    <input
-      type="password"
-      v-model="password"
-      required
-      placeholder="Enter Password" />
-    <button @click="sigUp">Sign Up</button>
-  </div>
   <div>
     You have already account:
     <span style="font-weight: 800"
       ><router-link to="/">Login</router-link></span
     >
-  </div> -->
+  </div>
 </template>
 
 <script>
@@ -58,36 +44,27 @@ export default {
   data() {
     return {
       name: "",
-      // email: "",
-      // password: "",
       email: "",
       password: "",
       phone: "",
       terms: false,
       passwordError: "",
       phoneError: "",
+      nameError: "",
     };
   },
   methods: {
     async sigUp() {
-      // this.passwordError =
-      //   this.password.length > 5
-      //     ? ""
-      //     : "Password must be at least 6 chars long";
-      // this.phoneError =
-      //   this.phone.length > 10 ? "" : "Phone No must be 11 chars long";
-      if (this.name)
-        if (this.password.length < 5) {
-          this.passwordError = "Password must be at least 6 chars long";
-        } else {
-          ("");
-        }
+      if (this.name.length <= 3) {
+        return (this.nameError = "Name must be at least 3 chars long");
+      } else this.nameError = "";
+      if (this.password.length <= 5) {
+        return (this.passwordError = "Password must be at least 6 chars long");
+      } else this.passwordError = "";
 
-      if (this.phone.length < 11) {
-        this.phoneError = "Phone No must be 11 chars long";
-      } else {
-        ("");
-      }
+      if (this.phone.length <= 11) {
+        return (this.phoneError = "Phone No must be 11 chars long");
+      } else this.phoneError = "";
       let result = await axios.post("http://localhost:3000/users", {
         name: this.name,
         email: this.email,
@@ -99,26 +76,6 @@ export default {
         localStorage.setItem("user-info", JSON.stringify(result.data));
         this.$router.push({ name: "TodoView" });
       }
-      // console.warn(result);
-    },
-
-    handleSubmit() {
-      // console.log("from Submitted");
-      // check vlidate password
-      this.passwordError =
-        this.password.length > 5
-          ? ""
-          : "Password must be at least 6 chars long";
-      this.phoneError =
-        this.phone.length > 10 ? "" : "Phone No must be 11 chars long";
-      // if (!this.passwordError) {
-      //   console.log("email: ", this.email);
-      //   console.log("password: ", this.password);
-      //   console.log("phone: ", this.phone);
-      //   console.log("role: ", this.role);
-      //   console.log("skills: ", this.skills);
-      //   console.log("terms accepted: ", this.terms);
-      // }
     },
   },
   mounted() {
