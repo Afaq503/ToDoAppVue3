@@ -61,6 +61,7 @@
 
 <script>
 import Header from "../components/Header.vue";
+import axios from "axios";
 
 export default {
   name: "TodoView",
@@ -72,6 +73,7 @@ export default {
   },
   mounted() {
     let user = localStorage.getItem("user-info");
+
     if (!user) {
       this.$router.push({ name: "SignupView" });
     }
@@ -79,7 +81,9 @@ export default {
   data() {
     return {
       task: "",
+      status: "",
       editedTask: null,
+
       statuses: ["to-do", "in-progress", "finished"],
       tasks: [
         // {
@@ -95,7 +99,6 @@ export default {
         //   status: "finished",
         // },
       ],
-      api: "http://localhost:5000",
     };
   },
   methods: {
@@ -117,7 +120,8 @@ export default {
       this.tasks.splice(index, 1);
     },
     //submit task
-    submitTask() {
+    async submitTask() {
+      // let tasks = JSON.parse(localStorage.getItem("tasks"));
       if (this.task.length === 0) return;
 
       if (this.editedTask != null) {
@@ -129,7 +133,16 @@ export default {
           status: "todo",
         });
       }
+      // localStorage.setItem("task", JSON.stringify(this.tasks));
+      let alltask = await axios.post("http://localhost:3000/task", {
+        task: this.task,
+      });
       this.task = "";
+
+      if (alltask.status == 201) {
+        localStorage.setItem("user-tasks", JSON.stringify(alltask.data));
+        // this.$router.push({ name: "TodoView" });
+      }
     },
   },
 };
@@ -140,7 +153,7 @@ export default {
   cursor: pointer;
 }
 .noselect {
-  -webkit-touch-callout: none; /* iOS Safari*/
+  -webkit-touch-callout: none;
   -webkit-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
