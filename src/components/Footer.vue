@@ -1,5 +1,5 @@
 <template>
-  <div class="foot">
+  <div class="footer">
     <p>All right reversed by @ Muhammad Afaq</p>
   </div>
 </template>
@@ -9,7 +9,7 @@ export default {};
 </script>
 
 <style>
-.foot {
+.footer {
   clear: both;
   position: relative;
   /* height: 200px; */
