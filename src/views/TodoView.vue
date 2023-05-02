@@ -25,7 +25,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="(task, index) in tasks" :key="index">
+        <tr v-for="(task, id) in tasks" :key="id">
           <td>
             <span :class="{ 'line-through': task.status === 'finished' }">
               {{ task.name }}
@@ -34,7 +34,7 @@
           <td>
             <span
               class="pointer noselect"
-              @click="changeStatus(index)"
+              @click="changeStatus(id)"
               :class="{
                 'text-danger': task.status === 'to-do',
                 'text-success': task.status === 'finished',
@@ -44,12 +44,12 @@
             </span>
           </td>
           <td class="text-center">
-            <div @click="editTask(index)">
+            <div @click="editTask(id)">
               <span class="fa fa-pen pointer"></span>
             </div>
           </td>
           <td class="text-center">
-            <div @click="deleteTask(index)">
+            <div @click="deleteTask(id)">
               <span class="fa fa-trash pointer"></span>
             </div>
           </td>
@@ -85,47 +85,28 @@ export default {
       editedTask: null,
 
       statuses: ["to-do", "in-progress", "finished"],
-      tasks: [
-        // {
-        //   name: "hy sdfhsi",
-        //   status: "to-do",
-        // },
-        // {
-        //   name: "hy jkbdhsjkhdkjh",
-        //   status: "in-progress",
-        // },
-        // {
-        //   name: "hy sdfhsi",
-        //   status: "finished",
-        // },
-      ],
+      tasks: [],
     };
   },
   methods: {
     capitalizeFirstChar(str) {
-      return str.charAt(0) + str.slice(1);
+      if (!str) {
+        return "";
+      }
+      return str.charAt(0).toUpperCase() + str.slice(1);
     },
-    changeStatus(index) {
-      let newIndex = this.statuses.indexOf(this.tasks[index].status);
-      if (++newIndex > 2) newIndex = 0;
-      this.tasks[index].status = this.statuses[newIndex];
+    changeStatus(id) {
+      let newid = this.statuses.indexOf(this.tasks[id].status);
+      if (++newid > 2) newid = 0;
+      this.tasks[id].status = this.statuses[newid];
     },
-    //edit Task
-    editTask(index) {
-      this.task = this.tasks[index].name;
-      this.editedTask = index;
-    },
-    // delete Task
-    deleteTask(index) {
-      this.tasks.splice(index, 1);
-    },
+
     //submit task
     async submitTask() {
-      // let tasks = JSON.parse(localStorage.getItem("tasks"));
-      if (this.task.length === 0) return;
+      if (this.tasks.length === 0) return;
 
       if (this.editedTask != null) {
-        this.tasks[this.editedTask].name = this.task;
+        this.tasks[this.editedTask].name = this.tasks;
         this.editedTask = null;
       } else {
         this.tasks.push({
@@ -133,17 +114,45 @@ export default {
           status: "todo",
         });
       }
-      // localStorage.setItem("task", JSON.stringify(this.tasks));
-      let alltask = await axios.post("http://localhost:3000/task", {
-        task: this.task,
+      let alltask = await axios.post("http://localhost:3000/tasks", {
+        name: this.task,
       });
       this.task = "";
-
-      if (alltask.status == 201) {
-        localStorage.setItem("user-tasks", JSON.stringify(alltask.data));
-        // this.$router.push({ name: "TodoView" });
-      }
+      localStorage.setItem("user-tasks", JSON.stringify(alltask.data));
     },
+    //edit Task
+    // editTask(id) {
+    //   this.tasks = this.task[id].name;
+    //   this.editedTask = id;
+    // },
+    editTask(id) {
+      this.task = this.tasks[id].name;
+      this.status = this.tasks[id].status;
+      this.editedTask = id;
+    },
+    updateTask() {
+      this.tasks[this.editedTask].name = this.task;
+      this.tasks[this.editedTask].status = this.status;
+      localStorage.setItem("tasks", JSON.parse(this.tasks));
+      this.task = "";
+      this.status = "";
+      this.editedTask = null;
+    },
+    // delete Task
+    deleteTask(id) {
+      this.tasks.splice(id, 1);
+      // localStorage.setItem("user-tasks", JSON.stringify(this.tasks));
+      localStorage.removeItem("user-tasks");
+    },
+    async featch() {
+      const res = await fetch("http://localhost:3000/tasks");
+      const data = await res.json();
+      return data;
+    },
+  },
+  async created() {
+    this.tasks = await this.featch();
+    console.log(this.tasks);
   },
 };
 </script>
