@@ -2,7 +2,7 @@
   <!-- <div class="container1"> -->
   <img class="logo" src="../assets/logo1.png" />
   <h1>Sign Up</h1>
-  <form @submit.prevent @keypress.enter="sigUp">
+  <form @submit.prevent="sigUp">
     <label>Name:</label>
     <input type="text" required v-model="name" />
     <div v-if="nameError" class="error">
@@ -11,7 +11,7 @@
     <label>Email:</label>
     <input type="email" required v-model="email" />
     <label>Password:</label>
-    <input type="password" required v-model="password" />
+    <input type="password" required v-model="password" autocomplete="on" />
     <div v-if="passwordError" class="error">
       {{ passwordError }}
     </div>
@@ -27,7 +27,7 @@
     </div>
 
     <div class="submit">
-      <button @submit="sigUp">Create an account</button>
+      <button>Create an account</button>
     </div>
   </form>
   <div>
@@ -64,7 +64,7 @@ export default {
         return (this.passwordError = "Password must be at least 6 chars long");
       } else this.passwordError = "";
 
-      if (this.phone.length <= 11) {
+      if (this.phone.length <= 10) {
         return (this.phoneError = "Phone No must be 11 chars long");
       } else this.phoneError = "";
       let result = await axios.post("http://localhost:3000/users", {

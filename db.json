@@ -1,0 +1,25 @@
+{
+  "users": [
+    {
+      "name": "Muhammad Afaq",
+      "email": "afaqg503@gmail.com",
+      "password": "123456789",
+      "phone": "+923154620054",
+      "id": 1
+    },
+    {
+      "name": "Muhammad Afaq1",
+      "email": "afaqg502@gmail.com",
+      "password": "123456",
+      "phone": "+923154620054",
+      "id": 2
+    }
+  ],
+  "tasks": [
+    {
+      "name": "kjjnkjln",
+      "status": "todo",
+      "id": 2
+    }
+  ]
+}

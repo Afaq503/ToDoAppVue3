@@ -1,20 +1,14 @@
 <template>
   <Header />
   <div class="container" style="max-width: 600px">
-    <!-- heading Start -->
-    <h2 class="text-center mt-5">My TODO App</h2>
-    <!-- input -->
-    <div class="d-flex mt-5" @keyup.enter="submitTask">
-      <input
-        type="text"
-        v-model="task"
-        placeholder="Enter Task"
-        class="w-100 form control" />
-      <button class="btn btn-warning rounded-0" @click="submitTask">
-        Submit
+    <h2 class="text-center mt-5">My To-Do List</h2>
+    <div class="d-flex mt-5" @keyup.enter="addTask">
+      <input type="text" v-model="newTask" placeholder="Enter a new task" />
+      <button class="btn btn-warning rounded-0" @click="addTask">
+        AddTask
       </button>
     </div>
-    <!-- Task Table  -->
+
     <table class="table table-bordered mt-5">
       <thead>
         <tr>
@@ -25,16 +19,19 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="(task, id) in tasks" :key="id">
+        <tr v-for="(task, index) in tasks" :key="index">
           <td>
-            <span :class="{ 'line-through': task.status === 'finished' }">
-              {{ task.name }}
-            </span>
+            <span v-if="!task.editing">{{ task.name }}</span>
+            <input
+              v-else
+              type="text"
+              v-model="task.name"
+              placeholder="Edit task" />
           </td>
           <td>
             <span
-              class="pointer noselect"
-              @click="changeStatus(id)"
+              class="pointer"
+              @click="changeStatus(index)"
               :class="{
                 'text-danger': task.status === 'to-do',
                 'text-success': task.status === 'finished',
@@ -44,12 +41,21 @@
             </span>
           </td>
           <td class="text-center">
-            <div @click="editTask(id)">
-              <span class="fa fa-pen pointer"></span>
-            </div>
+            <button @click="toggleEditing(task)">
+              {{ task.editing ? "Save" : "Edit" }}
+            </button>
           </td>
+          <!-- <td class="text-center">
+            <div @keyup.enter="toggleEditing(task)">
+              <span
+                :class="task.editing ? 'fa fa-save' : 'fa fa-pencil'"></span>
+            </div>
+          </td> -->
+          <!-- <td>
+            <button @click="deleteTask(index)">Delete</button>
+          </td> -->
           <td class="text-center">
-            <div @click="deleteTask(id)">
+            <div @click="deleteTask(task.id)">
               <span class="fa fa-trash pointer"></span>
             </div>
           </td>
@@ -60,16 +66,74 @@
 </template>
 
 <script>
-import Header from "../components/Header.vue";
 import axios from "axios";
-
+import Header from "../components/Header.vue";
 export default {
   name: "TodoView",
   components: {
     Header,
   },
-  props: {
-    msg: String,
+  data() {
+    return {
+      newTask: "",
+      tasks: [],
+      newStatus: "todo",
+      statuses: ["to-do", "in-progress", "finished"],
+    };
+  },
+  methods: {
+    async addTask() {
+      if (this.newTask) {
+        this.tasks.push({
+          name: this.newTask,
+          status: this.newStatus,
+          editing: false,
+        });
+      }
+      let alltask = await axios.post("http://localhost:3000/tasks", {
+        name: this.newTask,
+        status: this.newStatus,
+      });
+      this.newTask = "";
+
+      localStorage.setItem("tasks", JSON.stringify(alltask.data));
+    },
+    toggleEditing(task) {
+      task.editing = !task.editing;
+      localStorage.setItem("tasks", JSON.stringify(this.tasks));
+    },
+    async updatetask() {
+      // await axios.put("http://localhost:3000/tasks/" + this.id, this.newtask);
+      localStorage.setItem("tasks", JSON.stringify(this.tasks));
+    },
+    deleteTask(id) {
+      console.log(id);
+      axios.delete("http://localhost:3000/tasks/" + id);
+      this.featch();
+    },
+    capitalizeFirstChar(str) {
+      if (!str) {
+        return "";
+      }
+      return str.charAt(0).toUpperCase() + str.slice(1);
+    },
+    async changeStatus(index) {
+      let newindex = this.statuses.indexOf(this.tasks[index].status);
+      if (++newindex > 2) newindex = 0;
+      this.tasks[index].status = this.statuses[newindex];
+      console.log("States Save");
+    },
+    async featch() {
+      let res = await axios.get("http://localhost:3000/tasks");
+      this.tasks = res.data;
+    },
+  },
+  async created() {
+    if (localStorage.getItem("tasks")) {
+      this.tasks = JSON.stringify(localStorage.getItem("tasks"));
+    }
+    this.tasks = await this.featch();
+    console.log(this.tasks);
   },
   mounted() {
     let user = localStorage.getItem("user-info");
@@ -77,98 +141,7 @@ export default {
     if (!user) {
       this.$router.push({ name: "SignupView" });
     }
-  },
-  data() {
-    return {
-      task: "",
-      status: "",
-      editedTask: null,
-
-      statuses: ["to-do", "in-progress", "finished"],
-      tasks: [],
-    };
-  },
-  methods: {
-    capitalizeFirstChar(str) {
-      if (!str) {
-        return "";
-      }
-      return str.charAt(0).toUpperCase() + str.slice(1);
-    },
-    changeStatus(id) {
-      let newid = this.statuses.indexOf(this.tasks[id].status);
-      if (++newid > 2) newid = 0;
-      this.tasks[id].status = this.statuses[newid];
-    },
-
-    //submit task
-    async submitTask() {
-      if (this.tasks.length === 0) return;
-
-      if (this.editedTask != null) {
-        this.tasks[this.editedTask].name = this.tasks;
-        this.editedTask = null;
-      } else {
-        this.tasks.push({
-          name: this.task,
-          status: "todo",
-        });
-      }
-      let alltask = await axios.post("http://localhost:3000/tasks", {
-        name: this.task,
-      });
-      this.task = "";
-      localStorage.setItem("user-tasks", JSON.stringify(alltask.data));
-    },
-    //edit Task
-    // editTask(id) {
-    //   this.tasks = this.task[id].name;
-    //   this.editedTask = id;
-    // },
-    editTask(id) {
-      this.task = this.tasks[id].name;
-      this.status = this.tasks[id].status;
-      this.editedTask = id;
-    },
-    updateTask() {
-      this.tasks[this.editedTask].name = this.task;
-      this.tasks[this.editedTask].status = this.status;
-      localStorage.setItem("tasks", JSON.parse(this.tasks));
-      this.task = "";
-      this.status = "";
-      this.editedTask = null;
-    },
-    // delete Task
-    deleteTask(id) {
-      this.tasks.splice(id, 1);
-      // localStorage.setItem("user-tasks", JSON.stringify(this.tasks));
-      localStorage.removeItem("user-tasks");
-    },
-    async featch() {
-      const res = await fetch("http://localhost:3000/tasks");
-      const data = await res.json();
-      return data;
-    },
-  },
-  async created() {
-    this.tasks = await this.featch();
-    console.log(this.tasks);
+    this.featch();
   },
 };
 </script>
-
-<style>
-.pointer {
-  cursor: pointer;
-}
-.noselect {
-  -webkit-touch-callout: none;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
-}
-.line-through {
-  text-decoration: line-through;
-}
-</style>
